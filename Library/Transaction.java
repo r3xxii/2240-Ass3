@@ -3,6 +3,8 @@ import java.util.Date;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class Transaction {
 	private static Transaction instance; //The instance
@@ -14,6 +16,7 @@ public class Transaction {
 		return instance;
 	}
 
+	//Save transaction deets to a file
 	public void saveTransaction(String transactionDetails) {
     	try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/transactions.txt", true))) {
             writer.write(transactionDetails);
@@ -22,6 +25,30 @@ public class Transaction {
             System.err.println("Error saving transaction: " + e.getMessage());
         }
     }
+	
+	public void displayTransactionHistory() {
+		BufferedReader reader = null;
+	    try {
+	        reader = new BufferedReader(new FileReader("src/transactions.txt"));
+	        String line;
+	        System.out.println("=============== Transaction History ===============");
+	        while ((line = reader.readLine()) != null) {
+	            System.out.println(line);
+	        }
+	        System.out.println("===================================================");
+	    } catch (IOException e) {
+	        System.err.println("Error reading transaction history: " + e.getMessage());
+	    } finally {
+	        //close bufferedreader.
+	        try {
+	            if (reader != null) {
+	                reader.close();
+	            }
+	        } catch (IOException e) {
+	            System.err.println("Error closing file: " + e.getMessage());
+	        }
+	    }
+	}
 	
     // Perform the borrowing of a book
     public boolean borrowBook(Book book, Member member) {
