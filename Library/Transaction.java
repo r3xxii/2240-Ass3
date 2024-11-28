@@ -7,11 +7,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class Transaction {
-	private static Transaction instance; //The instance
-	private Transaction() {} //The private constructor
+	private static Transaction instance; //The single instance
+	private Transaction() {} //The private constructor to restrict construction access
 	public static Transaction getTransaction() { //The getter
 		if(instance == null) {
-			instance = new Transaction();
+			instance = new Transaction(); //Constructs an instance if it doesn't already exist
 		}
 		return instance;
 	}
@@ -20,7 +20,7 @@ public class Transaction {
 	public void saveTransaction(String transactionDetails) {
     	try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/transactions.txt", true))) {
             writer.write(transactionDetails);
-            writer.newLine();
+            writer.newLine(); //each transaction starts at a new line
         } catch (IOException e) {
             System.err.println("Error saving transaction: " + e.getMessage());
         }
@@ -39,7 +39,7 @@ public class Transaction {
 	    } catch (IOException e) {
 	        System.err.println("Error reading transaction history: " + e.getMessage());
 	    } finally {
-	        //close bufferedreader.
+	        //close BufferedReader.
 	        try {
 	            if (reader != null) {
 	                reader.close();
