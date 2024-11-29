@@ -1,6 +1,8 @@
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 
 public class LibraryManagementTest {
 	private Transaction transaction;
@@ -13,7 +15,6 @@ public class LibraryManagementTest {
     	book = new Book(101, "Test Book");
         member = new Member(1, "Test Member");
     }
-
 	@Test
 	public void testBookId() throws Exception {
 		Book validBook1 = new Book(100, "Valid Book"); //Test for the minimal valid.
@@ -63,5 +64,11 @@ public class LibraryManagementTest {
         boolean returnAgainResult = transaction.returnBook(book, member);
         assertFalse(returnAgainResult);
 	}
-
+	@Test
+	public void testSingletonTransaction() throws Exception{
+		Constructor<Transaction> constructor = Transaction.class.getDeclaredConstructor();
+		//check if constructor is private
+		int modifiers = constructor.getModifiers();
+		assertTrue(Modifier.isPrivate(modifiers), "Transaction constructor is not private");
+	}
 }
