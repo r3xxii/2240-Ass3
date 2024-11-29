@@ -1,7 +1,18 @@
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class LibraryManagementTest {
+public class LibraryManagementTest {
+	private Transaction transaction;
+	private Book book;
+    private Member member;
+    
+    @BeforeEach
+    public void setUp() throws Exception {
+    	transaction = Transaction.getTransaction();
+    	book = new Book(101, "Test Book");
+        member = new Member(1, "Test Member");
+    }
 
 	@Test
 	public void testBookId() throws Exception {
@@ -27,9 +38,30 @@ class LibraryManagementTest {
             assertEquals("Invalid Book ID. It must be between 99 and 1000.", e.getMessage());
         }
         
-        assertTrue(new Book(200, "Valid Book").isValidId(100));
+        assertTrue(new Book(200, "Valid Book").isValidId(validBook1.getId()));
         assertFalse(new Book(200, "Valid Book").isValidId(50));
         assertFalse(new Book(200, "Valid Book").isValidId(1200));
+	}
+	@Test
+	public void testBorrowReturn() {
+		//check if book is available
+		assertTrue(book.isAvailable());
+		//borrow book and check if successful
+		boolean borrowResult = transaction.borrowBook(book, member);
+        assertTrue(borrowResult);
+        //check that the book is no longer available
+        assertFalse(book.isAvailable());
+        //borrow book again, should be unsuccessful
+        boolean borrowAgainResult = transaction.borrowBook(book, member);
+        assertFalse(borrowAgainResult);
+        //return book and check that its successful
+        boolean returnResult = transaction.returnBook(book, member);
+        assertTrue(returnResult);
+        //check if book is available, it should be
+        assertTrue(book.isAvailable());
+        //return book, it should be unsuccessful
+        boolean returnAgainResult = transaction.returnBook(book, member);
+        assertFalse(returnAgainResult);
 	}
 
 }
